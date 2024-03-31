@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+
+
+
+const handleLogout = () => {
+  window.localStorage.clear();
+  window.location.href = "./";
+};
+
 const Signedin_Navbar = () => {
   
 
@@ -21,7 +29,9 @@ const Signedin_Navbar = () => {
         </div>
 
       <div>
-        <button className="bg-blue-500 text-white font-bold rounded-2xl px-4 py-2" >
+        <button className="bg-blue-500 text-white font-bold rounded-2xl px-4 py-2"
+        type="button"
+        onClick={handleLogout} >
           Logout
         </button>
       </div>

@@ -1,13 +1,19 @@
-
-
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import axios, { AxiosError } from "axios";
 
 const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [isLogin, setIsLogin] = useState(true); // Track whether it's login or signup form
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [isOTP, setIsOTP] = useState(false);
+  const [otp, setOtp] = useState("");
+
+  const handleOTPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOtp(e.target.value);
+  };
 
   const toggleLogin = () => {
     setShowLogin(!showLogin);
@@ -21,23 +27,162 @@ const Navbar = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Handle login or signup logic here based on isLogin state
     if (isLogin) {
-      console.log("Login submitted with email:", email, "and password:", password);
+      try {
+        console.log(email, password);
+        const userData = {
+          email: email,
+          password: password,
+        };
+
+        const response = await axios.post(
+          "http://localhost:3000/api/v1/users/login",
+          userData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          window.localStorage.setItem(
+            "token",
+            JSON.stringify(response.data.data.token)
+          );
+          setShowLogin(false);
+          alert("User Logged in Successfully!");
+          window.location.href = "./signedin_home";
+        } else {
+          alert("Something went wrong during SignIn!");
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError;
+          if (axiosError.response && axiosError.response.status === 404) {
+            alert("Invalid email or password!");
+          } else {
+            console.error("Error during signin:", axiosError);
+            alert("Something went wrong");
+          }
+        } else {
+          console.error("Non-Axios error during signin:", error);
+          alert("Something went wrong");
+        }
+      }
+      setEmail("");
+      setPassword("");
+      setOtp("");
     } else {
-      console.log("Signup submitted with email:", email, "and password:", password);
+        if(email!=='' && password!=='') {
+
+          try {
+            console.log(email);
+            const userData = {
+              email: email,
+            };    
+            const response = await axios.post(
+              "http://localhost:3000/api/v1/users/sendOTP",
+              userData,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                },
+              }
+            );
+    
+            if (response.status === 200) {
+              alert("An OTP has been sent to your Email address!");
+              setOtp("");
+              setIsOTP(true);
+            } else {
+              alert("Something went wrong during sending OTP");
+            }
+          } catch (error) {
+            if (axios.isAxiosError(error)) {
+              const axiosError = error as AxiosError;
+              if (axiosError.response && axiosError.response.status === 500) {
+                alert("Failed to generate OTP!");
+              } else {
+                console.error("Error during sending OTP:", axiosError);
+                alert("Something went wrong");
+              }
+            } else {
+              console.error("Non-Axios error during sending OTP", error);
+              alert("Something went wrong");
+            }
+          }
+          
+        }
     }
-    // Clear form fields after submission
-    setEmail('');
-    setPassword('');
-    // Close login form
-    setShowLogin(false);
   };
+
+
+
+  const handleOTPSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+     
+    if(otp.length === 5){
+      try {
+        console.log(email, password);
+        const userData = {
+          name: "unknown",
+          email: email,
+          password: password,
+          type: "customer",
+          otp: otp,
+        };
+        const response = await axios.post(
+          "http://localhost:3000/api/v1/users/signup",
+          userData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
+        if (response.status === 201) {
+          setShowLogin(true);
+          setIsLogin(true);
+          alert("User Registered Successfully!");
+        } else {
+          alert("Something went wrong during registering user");
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError;
+          if (axiosError.response && axiosError.response.status === 404) {
+            alert("User already exists!");
+          } else {
+            console.error("Error during registration:", error);
+            alert("Something went wrong");
+          }
+        } else {
+          console.error("Non-Axios error during SignUp:", error);
+          alert("Something went wrong");
+        }
+      }
+    }
+    setIsOTP(false);
+    setEmail("");
+    setPassword("");
+    setOtp("");
+  };
+
 
   const toggleForm = () => {
     setIsLogin(!isLogin); // Toggle between login and signup form
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -46,16 +191,29 @@ const Navbar = () => {
         <span className="text-xl text-sky-500 font-bold mr-4">WherePromo</span>
       </div>
 
-    <div className="flex space-x-4">
-        <Link to="/" className="text-gray-700 hover:text-blue-500">Home</Link>
-        <Link to="/pricing" className="text-gray-700 hover:text-blue-500">Pricing</Link>
-        <Link to="/about" className="text-gray-700 hover:text-blue-500">About</Link>
-        <Link to="/articles" className="text-gray-700 hover:text-blue-500">Articles</Link>
-        <Link to="/maps" className="text-gray-700 hover:text-blue-500">Maps</Link>
-        </div>
+      <div className="flex space-x-4">
+        <Link to="/" className="text-gray-700 hover:text-blue-500">
+          Home
+        </Link>
+        <Link to="/pricing" className="text-gray-700 hover:text-blue-500">
+          Pricing
+        </Link>
+        <Link to="/about" className="text-gray-700 hover:text-blue-500">
+          About
+        </Link>
+        <Link to="/articles" className="text-gray-700 hover:text-blue-500">
+          Articles
+        </Link>
+        <Link to="/maps" className="text-gray-700 hover:text-blue-500">
+          Maps
+        </Link>
+      </div>
 
       <div>
-        <button className="bg-blue-500 text-white font-bold rounded-2xl px-4 py-2" onClick={toggleLogin}>
+        <button
+          className="bg-blue-500 text-white font-bold rounded-2xl px-4 py-2"
+          onClick={toggleLogin}
+        >
           Login to Account
         </button>
       </div>
@@ -65,10 +223,10 @@ const Navbar = () => {
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col items-center px-20 py-16 max-w-lg text-base bg-white rounded-3xl max-md:px-5">
               <div className="mt-5 text-4xl font-bold tracking-tighter text-sky-500 leading-[49px]">
-                {isLogin ? 'Login' : 'Sign Up'}
+                {isLogin ? "Login" : "Sign Up"}
               </div>
               <div className="flex gap-5 justify-between px-4 py-3.5 mt-16 max-w-full whitespace-nowrap bg-white rounded-3xl border border-violet-300 border-solid text-stone-900 w-[313px] max-md:mt-10">
-                <div className="self-start mt-3">Username</div>
+                <div className="self-start mt-3">Email</div>
                 <input
                   type="text"
                   value={email}
@@ -89,14 +247,55 @@ const Navbar = () => {
                   required
                 />
               </div>
-              <div className="mt-4 text-sm text-cyan-900">{isLogin ? 'Forgot password?' : ''}</div>
-              <button type="submit" className="bg-blue-500 text-white font-bold rounded-lg px-4 py-2 mt-8">{isLogin ? 'Login' : 'Sign Up'}  
-
+              <div className="mt-4 text-sm text-cyan-900">
+                {isLogin ? "Forgot password?" : ""}
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white font-bold rounded-lg px-4 py-2 mt-8"
+              >
+                {isLogin ? "Login" : "Sign Up"}
               </button>
               <div className="mt-4 text-base">
                 {isLogin ? "New here? " : "Already have an account? "}
-                <button type="button" className="text-sky-600 underline" onClick={toggleForm}>{isLogin ? "Register Now!" : "Login Here"}</button>
+                <button
+                  type="button"
+                  className="text-sky-600 underline"
+                  onClick={toggleForm}
+                >
+                  {isLogin ? "Register Now!" : "Login Here"}
+                </button>
               </div>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {isOTP && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <form onSubmit={handleOTPSubmit}>
+            <div className="flex flex-col items-center px-20 py-16 max-w-lg text-base bg-white rounded-3xl max-md:px-5">
+              <div className="mt-5 text-4xl font-bold tracking-tighter text-sky-500 leading-[49px]">
+                One Time Password
+              </div>
+              OTP is valid for only 5 minutes!
+              <div className="flex gap-5 justify-between px-4 py-3.5 mt-16 max-w-full whitespace-nowrap bg-white rounded-3xl border border-violet-300 border-solid text-stone-900 w-[313px] max-md:mt-10">
+                <div className="self-start mt-3">OTP</div>
+                <input
+                  type="number"
+                  value={otp}
+                  onChange={handleOTPChange}
+                  className="border-none focus:outline-none px-3 py-2 w-full"
+                  placeholder="Enter your OTP"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white font-bold rounded-lg px-4 py-2 mt-8"
+              >
+                Submit
+              </button>
             </div>
           </form>
         </div>
