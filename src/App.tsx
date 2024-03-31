@@ -27,8 +27,9 @@ function App() {
           <Route path="/article/:id" element={<DetailedArticle />} />
           <Route path="/signedin_home" element={<Signedin_Home />} />
           <Route path="/signedin_article" element={<Signedin_Articles />} />
+  
+        
 
-         
           <Route path="/signedin_articles/:id" element={<Signedin_DetailedArticle />} />
           <Route path="favourites" element={<Favorites />} />
           <Route path="/paid_home" element={<Paid_Home />} />

@@ -31,9 +31,7 @@ function Signedin_Home() {
       <Signedin_ArticleList />
       <MapImage />
       <Signedin_ShopList />
-      
-
-
+    
 </>
   )
 }
