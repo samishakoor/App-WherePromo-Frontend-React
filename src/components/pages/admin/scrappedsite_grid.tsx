@@ -5,30 +5,41 @@ import axios from "axios";
 
 function ScrappedSiteGrid() {
   let [scrappedSite, setScrappedSites] = useState<any>([]);
-  useEffect(() => {
-    async function fetchScrappedSites() {
-      const token = window.localStorage.getItem("token");
-      if (!token) {
-        throw new Error("no token supplied");
-      }
-      const response = await axios.get(
-        "http://localhost:3000/api/v1/siteScrapping/scrappedData",
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(token)}`,
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
-      if (response.status == 200) {
-        console.log(response.data.data);
-        setScrappedSites(response.data.data);
-      } else {
-        alert("Hello");
-      }
+  
+  async function fetchScrappedSites() {
+    const token = window.localStorage.getItem("token");
+    if (!token) {
+      throw new Error("no token supplied");
     }
+    const response = await axios.get(
+      "http://localhost:3000/api/v1/siteScrapping/scrappedData",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    );
+    if (response.status == 200) {
+      console.log(response.data.data);
+      setScrappedSites(response.data.data);
+    } else {
+      alert("Hello");
+    }
+  }
+  useEffect(() => {    
     fetchScrappedSites();
   }, []);
+
+  const getFormattedArticleDate = (createdAt:string) => {
+    const date = new Date(createdAt);
+    const day = ('0' + date.getDate()).slice(-2); 
+    const year = date.getFullYear().toString().slice(-2); 
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const formattedDate = `${day}/${month}/${year} `;
+    return formattedDate;
+  };
+
   <Admin_Navbar />;
   return (
     <>
@@ -54,12 +65,12 @@ function ScrappedSiteGrid() {
         </div>
       </div>
 
-      {scrappedSite.map((e: { _id: any; website_url: string }) => {
+      {scrappedSite.map((e: { _id: any; website_url: string,createdAt:string }) => {
         return (
           <ScrappedSite
             id={e._id}
             title={e.website_url}
-            date={""}
+            date={getFormattedArticleDate(e.createdAt)}
             description={""}
             buttonText={"Approve"}
           />
