@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 
@@ -8,11 +8,16 @@ const Navbar = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [showPricing, setShowPricing] = useState(false);
   const [isOTP, setIsOTP] = useState(false);
   const [otp, setOtp] = useState("");
 
   const handleOTPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOtp(e.target.value);
+  };
+
+  const togglePricing = () => {
+    setShowPricing(!showPricing);
   };
 
   const toggleLogin = () => {
@@ -79,57 +84,53 @@ const Navbar = () => {
       setPassword("");
       setOtp("");
     } else {
-        if(email!=='' && password!=='') {
-
-          try {
-            console.log(email);
-            const userData = {
-              email: email,
-            };    
-            const response = await axios.post(
-              "http://localhost:3000/api/v1/users/sendOTP",
-              userData,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  Accept: "application/json",
-                  "Access-Control-Allow-Origin": "*",
-                },
-              }
-            );
-    
-            if (response.status === 200) {
-              alert("An OTP has been sent to your Email address!");
-              setOtp("");
-              setIsOTP(true);
-            } else {
-              alert("Something went wrong during sending OTP");
+      if (email !== "" && password !== "") {
+        try {
+          console.log(email);
+          const userData = {
+            email: email,
+          };
+          const response = await axios.post(
+            "http://localhost:3000/api/v1/users/sendOTP",
+            userData,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
             }
-          } catch (error) {
-            if (axios.isAxiosError(error)) {
-              const axiosError = error as AxiosError;
-              if (axiosError.response && axiosError.response.status === 500) {
-                alert("Failed to generate OTP!");
-              } else {
-                console.error("Error during sending OTP:", axiosError);
-                alert("Something went wrong");
-              }
+          );
+
+          if (response.status === 200) {
+            alert("An OTP has been sent to your Email address!");
+            setOtp("");
+            setIsOTP(true);
+          } else {
+            alert("Something went wrong during sending OTP");
+          }
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+            if (axiosError.response && axiosError.response.status === 500) {
+              alert("Failed to generate OTP!");
             } else {
-              console.error("Non-Axios error during sending OTP", error);
+              console.error("Error during sending OTP:", axiosError);
               alert("Something went wrong");
             }
+          } else {
+            console.error("Non-Axios error during sending OTP", error);
+            alert("Something went wrong");
           }
-          
         }
+      }
     }
   };
 
-
-
   const handleOTPSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-     
-    if(otp.length === 5){
+
+    if (otp.length === 5) {
       try {
         console.log(email, password);
         const userData = {
@@ -178,7 +179,6 @@ const Navbar = () => {
     setOtp("");
   };
 
-
   const toggleForm = () => {
     setIsLogin(!isLogin); // Toggle between login and signup form
     setEmail("");
@@ -195,9 +195,12 @@ const Navbar = () => {
         <Link to="/" className="text-gray-700 hover:text-blue-500">
           Home
         </Link>
-        <Link to="/pricing" className="text-gray-700 hover:text-blue-500">
+        <div
+          className="text-gray-700 hover:text-blue-500"
+          onClick={togglePricing}
+        >
           Pricing
-        </Link>
+        </div>
         <Link to="/about" className="text-gray-700 hover:text-blue-500">
           About
         </Link>
@@ -268,6 +271,47 @@ const Navbar = () => {
               </div>
             </div>
           </form>
+        </div>
+      )}
+
+      {showPricing && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="flex flex-col items-center px-8 py-6 max-w-lg text-base bg-white rounded-3xl max-md:px-5 relative">
+            <button
+              className="absolute top-2 right-2 text-gray-600"
+              onClick={togglePricing}
+            >
+              x
+            </button>
+            <div className="mt-2 text-2xl font-bold tracking-tighter text-sky-500 leading-[30px]">
+              Get Premium Today!
+            </div>
+            <div className="mt-4 w-full text-base tracking-wider leading-6 text-stone-500">
+              Join today to get some amazing features like:
+            </div>
+            <div className="flex flex-col px-4 mt-4 w-full">
+              <div className="text-base tracking-wider leading-6 text-black">
+                Advanced AI assistance
+              </div>
+              <div className="mt-2 text-base tracking-wider leading-6 text-black">
+                Tailored Grocery Shop Lists
+              </div>
+              <div className="mt-2 text-base tracking-wider leading-6 text-black">
+                User-Driven Contribution Rewards
+              </div>
+              <div className="flex justify-between mt-6 w-full">
+                <div className="text-xl font-bold tracking-tighter text-right text-blue-500">
+                  €9.90
+                </div>
+                <div className="text-lg tracking-wider text-gray-700">/mon</div>
+              </div>
+            </div>
+            <div className="mt-6">
+              <button className="bg-blue-500 text-white font-bold rounded-lg px-4 py-2">
+                Get Premium
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

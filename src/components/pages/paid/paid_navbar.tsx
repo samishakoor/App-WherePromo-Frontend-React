@@ -27,9 +27,9 @@ const Paid_Navbar = () => {
     setContributionDetail(e.target.value);
   };
 
-  const handlePictureChange = (e: { target: { files: React.SetStateAction<null>[]; }; }) => {
-    setPicture(e.target.files[0]);
-  };
+  // const handlePictureChange = (e: { target: { files: React.SetStateAction<null>[]; }; }) => {
+  //   setPicture(e.target.files[0]);
+  // };
 
   const handleSubmitContribution = () => {
     // Handle contribution submission logic here
@@ -135,7 +135,7 @@ const Paid_Navbar = () => {
             <div className="mt-4 w-full">
               <input
                 type="file"
-                onChange={handlePictureChange}
+           //     onChange={handlePictureChange}
                 className="border border-gray-300 rounded-md w-full px-3 py-2 mt-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>

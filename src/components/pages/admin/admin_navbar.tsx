@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Admin_Navbar = () => {
@@ -19,7 +18,7 @@ const Admin_Navbar = () => {
         <Link to="/articles" className="text-gray-700 hover:text-blue-500">Articles</Link>
         <Link to="/maps" className="text-gray-700 hover:text-blue-500">Maps</Link>
         <Link to="/scrappedsites" className="text-gray-700 hover:text-blue-500">Scrapped Sites</Link>
-        <Link to="/articles" className="text-gray-700 hover:text-blue-500">Articles</Link>
+        <Link to="/ApproveArticles" className="text-gray-700 hover:text-blue-500">Articles</Link>
         <Link to="/contributions" className="text-gray-700 hover:text-blue-500">Contributions</Link>
               
       </div>
