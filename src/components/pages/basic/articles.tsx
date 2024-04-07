@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import DetailedArticlesList from './detailedrticleslist';
+import Navbar from './navbar';
 
 function Articles() {
   // State variables for filter and search
   const [filter, setFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+
+  
   // Function to handle filter changes
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setFilter(event.target.value);
@@ -17,6 +20,8 @@ function Articles() {
   };
 
   return (
+    <div>
+      <Navbar/>
     <div className="flex flex-col items-center justify-center">
 
 <div className="flex gap-5 justify-between mt-16 w-full max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
@@ -52,6 +57,7 @@ function Articles() {
         other. Explore, be inspired, and uncover the stories that make shopping
         an unforgettable experience.
       </div>
+    </div>
     </div>
   );
 }

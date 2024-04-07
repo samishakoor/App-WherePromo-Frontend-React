@@ -1,17 +1,14 @@
-
-import HeroSection from '../../herosection';
-import Content from '../../content';
-import Signedin_ArticleList from '../signedin/signedin_articlelist';
-import MapImage from '../../mapimage';
-import Paid_Navbar from './paid_navbar';
-import Signedin_ShopList from '../signedin/signedin_shoplist';
-
+import HeroSection from "../../herosection";
+import Content from "../../content";
+import Signedin_ArticleList from "../signedin/signedin_articlelist";
+import MapImage from "../../mapimage";
+import Paid_Navbar from "./paid_navbar";
+import Signedin_ShopList from "../signedin/signedin_shoplist";
+import MyMapComponent from "../../maps/maps";
 
 function Paid_Home() {
-
   return (
     <>
-
       <Paid_Navbar />
 
       <HeroSection
@@ -29,13 +26,11 @@ function Paid_Home() {
         linkColor="text-sky-600"
       />
       <Signedin_ArticleList />
-      <MapImage />
+      {/* <MapImage /> */}
+      <MyMapComponent />
       <Signedin_ShopList />
-      
-
-
-</>
-  )
+    </>
+  );
 }
 
 export default Paid_Home;

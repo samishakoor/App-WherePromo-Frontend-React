@@ -1,17 +1,21 @@
-
-import HeroSection from '../../herosection';
-import Content from '../../content';
-import ArticleList from './articlelist';
-import MapImage from '../../mapimage';
-import ShopList from './shoplist';
-import Navbar from './navbar';
-
+import HeroSection from "../../herosection";
+import Content from "../../content";
+import ArticleList from "./articlelist";
+import MapImage from "../../mapimage";
+import ShopList from "./shoplist";
+import Navbar from "./navbar";
+import MyMapComponent from "../../maps/maps";
+import { useEffect } from "react";
 
 function Home() {
-
+  useEffect(() => {
+    const token = window.localStorage.getItem("token");
+    if (token) {
+      window.location.href = "./signedin_home";
+    }
+  });
   return (
     <>
-
       <Navbar />
 
       <HeroSection
@@ -29,12 +33,11 @@ function Home() {
         linkColor="text-sky-600"
       />
       <ArticleList />
-      <MapImage />
-      <ShopList /> 
-      
-
-</>
-  )
+      {/* <MapImage /> */}
+      <MyMapComponent />
+      <ShopList />
+    </>
+  );
 }
 
 export default Home;

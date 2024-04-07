@@ -9,13 +9,12 @@ function Favorites() {
     _id: string;
     title: string;
     author: string;
-    // Add other properties as needed
+    createdAt: string;
   }
   interface Shop {
     _id: string;
     city: string;
     author: string;
-    // Add other properties as needed
   }
 
   // State variables to manage selected option and favorite items for articles and shops
@@ -102,7 +101,14 @@ function Favorites() {
       }
     }
   };
-
+  const getFormattedArticleDate = (createdAt: string) => {
+    const date = new Date(createdAt);
+    const day = date.getDate();
+    const year = date.getFullYear().toString().slice(-2); 
+    const month = date.toLocaleString("default", { month: "short" });
+    const formattedDate = `${day}-${year} ${month}`;
+    return formattedDate;
+  };
   return (
     <>
       <Signedin_Navbar />
@@ -154,7 +160,7 @@ function Favorites() {
                   <FaHeart className="ml-2 cursor-pointer text-gray-500" />
                 </div>
                 <div className="flex gap-5 justify-between mt-6 text-base tracking-normal text-slate-500">
-                  <div>12/03/24</div>
+                  <div>{getFormattedArticleDate(article.createdAt)}</div>
                   <div className="flex-auto">by {article.author}</div>
                 </div>
               </div>

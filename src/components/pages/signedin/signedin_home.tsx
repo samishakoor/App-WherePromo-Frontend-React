@@ -1,17 +1,14 @@
-
-import HeroSection from '../../herosection';
-import Content from '../../content';
-import Signedin_ArticleList from './signedin_articlelist';
-import MapImage from '../../mapimage';
-import Signedin_Navbar from './signedin_navbar';
-import Signedin_ShopList from './signedin_shoplist';
-
+import HeroSection from "../../herosection";
+import Content from "../../content";
+import Signedin_ArticleList from "./signedin_articlelist";
+import MapImage from "../../mapimage";
+import Signedin_Navbar from "./signedin_navbar";
+import Signedin_ShopList from "./signedin_shoplist";
+import MyMapComponent from "../../maps/maps";
 
 function Signedin_Home() {
-
   return (
     <>
-
       <Signedin_Navbar />
 
       <HeroSection
@@ -29,11 +26,11 @@ function Signedin_Home() {
         linkColor="text-sky-600"
       />
       <Signedin_ArticleList />
-      <MapImage />
+      {/* <MapImage /> */}
+      <MyMapComponent />
       <Signedin_ShopList />
-    
-</>
-  )
+    </>
+  );
 }
 
 export default Signedin_Home;
