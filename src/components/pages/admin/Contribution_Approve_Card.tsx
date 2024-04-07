@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import "./Contribution_Approve_Card.css";
 
 interface Contribution {
@@ -12,22 +12,23 @@ interface Contribution {
 interface ContributionCardProps extends Contribution {} // Extend the Article interface
 
 const approve = async (id: any) => {
-  const token = window.localStorage.getItem("token");
-  if (!token) {
-    throw new Error("no token supplied");
-  }
-  const response = await axios.patch(
-    `http://localhost:3000/api/v1/articles/${id}/approve`,
-    {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(token)}`,
-        "Access-Control-Allow-Origin": "*",
-      },
-    }
-  );
-  if (response.status == 200) {
-    alert("Sucess");
-  }
+  console.log(id)
+  // const token = window.localStorage.getItem("token");
+  // if (!token) {
+  //   throw new Error("no token supplied");
+  // }
+  // const response = await axios.patch(
+  //   `http://localhost:3000/api/v1/articles/${id}/approve`,
+  //   {
+  //     headers: {
+  //       Authorization: `Bearer ${JSON.parse(token)}`,
+  //       "Access-Control-Allow-Origin": "*",
+  //     },
+  //   }
+  // );
+  // if (response.status == 200) {
+  //   alert("Sucess");
+  // }
 };
 
 const ContributionCard = (props: ContributionCardProps) => (

@@ -104,9 +104,9 @@ function Favorites() {
   const getFormattedArticleDate = (createdAt: string) => {
     const date = new Date(createdAt);
     const day = date.getDate();
-    const year = date.getFullYear().toString();
+    const year = date.getFullYear().toString().slice(-2); 
     const month = date.toLocaleString("default", { month: "short" });
-    const formattedDate = `${day}-${year.substring(2)} ${month}`;
+    const formattedDate = `${day}-${year} ${month}`;
     return formattedDate;
   };
   return (

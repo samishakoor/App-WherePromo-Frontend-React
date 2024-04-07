@@ -31,6 +31,15 @@ function Contributions() {
     fetchContributions();
   }, []);
 
+  const getFormattedArticleDate = (createdAt:string) => {
+    const date = new Date(createdAt);
+    const day = ('0' + date.getDate()).slice(-2); 
+    const year = date.getFullYear().toString().slice(-2); 
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const formattedDate = `${day}/${month}/${year} `;
+    return formattedDate;
+  };
+
   <Admin_Navbar />;
   return (
     <>
@@ -55,12 +64,12 @@ function Contributions() {
           Contributions
         </div>
       </div>
-      {contributions.map((e: { _id: any; name: string; details: string }) => {
+      {contributions.map((e: { _id: any; name: string; details: string , createdAt:string}) => {
         return (
           <ContributionCard
             id={e._id}
             title={e.name}
-            date={""}
+            date={getFormattedArticleDate(e.createdAt)}
             description={e.details}
             buttonText={"Approve"}
           />

@@ -6,30 +6,37 @@ import ArticleCard from "./Article_Approve_Card";
 
 function ArticleApprove() {
   let [approveArticles, setapproveArticles] = useState<any>([]);
-  useEffect(() => {
-    async function fetchArticles() {
-      const token = window.localStorage.getItem("token");
-      if (!token) {
-        throw new Error("no token supplied");
-      }
-      const response = await axios.get(
-        "http://localhost:3000/api/v1/articles/?sort_by=createdAt&page=1&per_page=10&order_by=desc",
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(token)}`,
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
-      if (response.status == 200) {
-        console.log(response.data.data);
-        setapproveArticles(response.data.data);
-      } else {
-        alert("Hello");
-      }
+  
+  async function fetchArticles() {
+    const token = window.localStorage.getItem("token");
+    if (!token) {
+      throw new Error("no token supplied");
     }
+    const response = await axios.get(
+      "http://localhost:3000/api/v1/articles/?sort_by=createdAt&page=1&per_page=10&order_by=desc&status=pending",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    );
+    if (response.status == 200) {
+      console.log(response.data.data);
+      setapproveArticles(response.data.data);
+    } else {
+      alert("Hello");
+    }
+  }
+
+  useEffect(() => { 
     fetchArticles();
   },[]);
+
+  const handleApproveSuccess = () => {
+    fetchArticles(); 
+  };
+
   <Admin_Navbar />;
   return (
     <>
@@ -62,6 +69,7 @@ function ArticleApprove() {
             title={e.title}
             description={e.author}
             buttonText={"Approve"}
+            onApproveSuccess={handleApproveSuccess}
           />
         );
       })}

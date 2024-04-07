@@ -9,15 +9,17 @@ interface Article {
 
 interface ArticleCardProps extends Article {
   id: any;
-} // Extend the Article interface
+  onApproveSuccess: () => void;
+} 
 
-const approve = async (id: any) => {
+const approve = async (id: any,onApproveSuccess: () => void) => {
   const token = window.localStorage.getItem("token");
   if (!token) {
     throw new Error("no token supplied");
   }
   const response = await axios.patch(
     `http://localhost:3000/api/v1/articles/${id}/approve`,
+    {},
     {
       headers: {
         Authorization: `Bearer ${JSON.parse(token)}`,
@@ -27,6 +29,7 @@ const approve = async (id: any) => {
   );
   if (response.status == 200) {
     alert("Success");
+    onApproveSuccess();
   }
 };
 
@@ -34,7 +37,7 @@ const ArticleCard = (props: ArticleCardProps) => (
   <div className="card">
     <h1>{props.title}</h1>
     <p>{props.description}</p>
-    <button onClick={() => approve(props.id)}>{props.buttonText}</button>
+    <button onClick={() => approve(props.id,props.onApproveSuccess)}>{props.buttonText}</button>
   </div>
 );
 
