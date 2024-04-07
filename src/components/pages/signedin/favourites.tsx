@@ -6,16 +6,15 @@ import axios, { AxiosError } from "axios";
 
 function Favorites() {
   interface Article {
-    createdAt: string;
     _id: string;
     title: string;
     author: string;
+    createdAt: string;
   }
   interface Shop {
     _id: string;
     city: string;
     author: string;
-    // Add other properties as needed
   }
 
   // State variables to manage selected option and favorite items for articles and shops

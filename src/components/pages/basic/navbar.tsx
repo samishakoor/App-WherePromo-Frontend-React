@@ -62,7 +62,16 @@ const Navbar = () => {
           );
           setShowLogin(false);
           alert("User Logged in Successfully!");
-          window.location.href = "./signedin_home";
+          const userType=response.data.data.userType;
+          if (userType === "admin"){
+            window.location.href = "./admin_home";
+          }
+          else if (userType === "paid"){
+            window.location.href = "./paid_home";
+          }
+          else{
+            window.location.href = "./signedin_home";
+          }
         } else {
           alert("Something went wrong during SignIn!");
         }
