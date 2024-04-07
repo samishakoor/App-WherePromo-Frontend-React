@@ -33,9 +33,14 @@ const Paid_Navbar = () => {
     return new Promise<string>((resolve, reject) => {
       const fileReader = new FileReader();
       fileReader.readAsDataURL(file);
+  
       fileReader.onload = () => {
-        const base64String = fileReader.result?.toString().split(",")[1] || "";
-        resolve(base64String);
+        const base64String = fileReader.result as string;
+        if (typeof base64String === 'string') {
+          resolve(base64String);
+        } else {
+          reject(new Error('Failed to convert file to base64'));
+        }
       };
       fileReader.onerror = (error) => {
         reject(error);
@@ -50,13 +55,17 @@ const Paid_Navbar = () => {
         alert("Image size should not exceed 2 MB");
         return;
       }
-      const allowedFormats = ["image/jpeg", "image/png"]; // Add more formats as needed
+      const allowedFormats = ["image/jpeg","image/jpg", "image/png"]; 
       if (!allowedFormats.includes(selectedFile.type)) {
         alert("Image format should be either jpeg or png");
         return;
       }
-      const base64Image = await convertToBase64(selectedFile);
-      setFlyerImage(base64Image);
+      try {
+        const base64String = await convertToBase64(selectedFile);
+        setFlyerImage(base64String);
+      } catch (error) {
+        console.error('Error converting file to base64:', error);
+      }
     }
   };
 
@@ -230,7 +239,7 @@ const Paid_Navbar = () => {
             <div className="mt-4 w-full">
               <input
                 type="file"
-                accept="image/jpeg,image/png"
+                accept="image/jpeg,image/png,image/jpg"
                 className="border border-gray-300 rounded-md w-full px-3 py-2 mt-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 onChange={handleImageFileChange}
               />
