@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FaHeart } from "react-icons/fa"; // Import the heart icon
+import { CiHeart } from "react-icons/ci";
+import { FaHeart } from "react-icons/fa"; 
 
 import Signedin_Navbar from "./signedin_navbar";
 import axios, { AxiosError } from "axios";
@@ -104,7 +105,7 @@ function Favorites() {
   const getFormattedArticleDate = (createdAt: string) => {
     const date = new Date(createdAt);
     const day = date.getDate();
-    const year = date.getFullYear().toString().slice(-2); 
+    const year = date.getFullYear().toString().slice(-2);
     const month = date.toLocaleString("default", { month: "short" });
     const formattedDate = `${day}-${year} ${month}`;
     return formattedDate;
@@ -157,7 +158,16 @@ function Favorites() {
                   <div className="text-lg tracking-wide text-zinc-950">
                     {article.title}
                   </div>
-                  <FaHeart className="ml-2 cursor-pointer text-gray-500" />
+
+                  <CiHeart
+                    className="ml-2 cursor-pointer text-black-500"
+                    style={{ width: "1.5em", height: "2em" }}
+                  />
+                  <FaHeart
+                    className="ml-2 cursor-pointer text-red-500"
+                    style={{ width: "1.5em", height: "1.25em" }}
+                  />
+
                 </div>
                 <div className="flex gap-5 justify-between mt-6 text-base tracking-normal text-slate-500">
                   <div>{getFormattedArticleDate(article.createdAt)}</div>
