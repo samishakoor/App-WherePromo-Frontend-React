@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaHeart } from "react-icons/fa"; // Import the heart icon
+import { FaHeart } from "react-icons/fa";
 
 import Signedin_Navbar from "./signedin_navbar";
 import axios, { AxiosError } from "axios";
@@ -32,11 +32,14 @@ function Favorites() {
       if (token) {
         const response = await axios.get<{
           data: Article[];
-        }>("http://localhost:3000/api/v1/articles/favourites/all", {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(token)}`,
-          },
-        });
+        }>(
+          "http://localhost:3000/api/v1/articles/favourites/all?page=1&per_page=10",
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(token)}`,
+            },
+          }
+        );
         if (response.status === 200) {
           setFavoriteArticles(response.data.data);
         } else {
@@ -72,11 +75,14 @@ function Favorites() {
         if (token) {
           const response = await axios.get<{
             data: Shop[];
-          }>("http://localhost:3000/api/v1/shops/favourites/all", {
-            headers: {
-              Authorization: `Bearer ${JSON.parse(token)}`,
-            },
-          });
+          }>(
+            "http://localhost:3000/api/v1/shops/favourites/all?page=1&per_page=10",
+            {
+              headers: {
+                Authorization: `Bearer ${JSON.parse(token)}`,
+              },
+            }
+          );
           if (response.status === 200) {
             setFavoriteShops(response.data.data);
           } else {
@@ -104,11 +110,44 @@ function Favorites() {
   const getFormattedArticleDate = (createdAt: string) => {
     const date = new Date(createdAt);
     const day = date.getDate();
-    const year = date.getFullYear().toString().slice(-2); 
+    const year = date.getFullYear().toString().slice(-2);
     const month = date.toLocaleString("default", { month: "short" });
     const formattedDate = `${day}-${year} ${month}`;
     return formattedDate;
   };
+
+  const handleFavourite = async (articleId: String) => {
+    const token = window.localStorage.getItem("token");
+    if (!token) {
+      throw new Error("no token supplied");
+    }
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/v1/favourites/dislike/${articleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(token)}`,
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+      if (response.status === 200) {
+        await fetchArticlesData();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response && axiosError.response.status === 500) {
+          alert("Something went wrong");
+        } else {
+          alert("Something went wrong");
+        }
+      } else {
+        alert("Something went wrong");
+      }
+    }
+  };
+
   return (
     <>
       <Signedin_Navbar />
@@ -157,7 +196,12 @@ function Favorites() {
                   <div className="text-lg tracking-wide text-zinc-950">
                     {article.title}
                   </div>
-                  <FaHeart className="ml-2 cursor-pointer text-gray-500" />
+
+                  <FaHeart
+                    className="ml-2 cursor-pointer text-red-500"
+                    style={{ width: "1.5em", height: "1.25em" }}
+                    onClick={() => handleFavourite(article._id)}
+                  />
                 </div>
                 <div className="flex gap-5 justify-between mt-6 text-base tracking-normal text-slate-500">
                   <div>{getFormattedArticleDate(article.createdAt)}</div>

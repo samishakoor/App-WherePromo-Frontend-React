@@ -1,7 +1,6 @@
 import HeroSection from "../../herosection";
 import Content from "../../content";
 import Signedin_ArticleList from "./signedin_articlelist";
-import MapImage from "../../mapimage";
 import Signedin_Navbar from "./signedin_navbar";
 import Signedin_ShopList from "./signedin_shoplist";
 import MyMapComponent from "../../maps/maps";
